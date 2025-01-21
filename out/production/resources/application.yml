@@ -1,0 +1,22 @@
+todoapp:
+  site:
+    author: SungA Cho
+    description: What're your plans today?
+  data:
+    initialize: true
+
+spring:
+  application:
+    name: todo
+
+logging:
+  level:
+    '[todoapp]': debug
+    web: trace
+    sql: debug
+
+server:
+  servlet:
+    encoding:
+      charset: utf-8
+      force: true
