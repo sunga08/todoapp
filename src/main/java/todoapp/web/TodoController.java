@@ -49,16 +49,18 @@ public class TodoController {
         // 접두사+뷰 네임+접미사를 이어붙인 파일 이름을 resource loader가 가져옴
     }
 
-    @RequestMapping(path = "/todos", produces = "text/csv")
+    @RequestMapping(path = "/todos", produces = "text/csv") //produces는 클라이언트 요청의 Accept 헤더에 따라 적합한 핸들러 메서드를 결정
     public void downloadTodos(Model model) {
-        model.addAttribute(SpreadsheetConverter.convert(findTodos.all()));
+//        model.addAttribute(SpreadsheetConverter.convert(findTodos.all()));
+        model.addAttribute("todos", findTodos.all());
     }
 
+    //커스텀 뷰 리졸버
     public static class TodoCsvViewResolver implements ViewResolver {
 
         @Override
         public View resolveViewName(String viewName, Locale locale) throws Exception {
-            if ("todos".equals(viewName)) {
+            if ("todos".equals(viewName)) { //컨트롤러에서 todos 뷰 이름이 전달되면 TodoCsvView 객체를 반환해 CSV 응답을 처리
                 return new TodoCsvView();
             }
 
@@ -67,12 +69,13 @@ public class TodoController {
 
     }
 
+    //CSV 생성 및 다운로드 처리
     public static class TodoCsvView extends AbstractView implements View {
 
-        final Logger log = LoggerFactory.getLogger(getClass());
+        private final Logger log = LoggerFactory.getLogger(TodoController.class);
 
         public TodoCsvView() {
-            setContentType("text/csv");
+            setContentType("text/csv"); //응답 컨텐트 타입 설정 (브라우저가 CSV 파일로 인식하도록 함)
         }
 
         @Override
@@ -81,12 +84,16 @@ public class TodoController {
         }
 
 
+        //컨트롤러에서 제공한 모델(todos 객체 리스트)을 사용해 CSV 응답 본문 생성
         @Override
+        @SuppressWarnings("unchecked")
         protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+            log.info("render model as csv content");
 
-            response.addHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"todos.csv\"");
-            response.getWriter().println("id,text,completed");
+            response.addHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"todos.csv\""); //브라우저가 CSV 파일을 다운로드하도록 설정
+            response.getWriter().println("id,text,completed"); //CSV 파일의 헤더
 
+            //본문 내용
             var todos = (List<Todo>) model.getOrDefault("todos", Collections.emptyList());
             for (var todo : todos) {
                 var line = "%s,%s,%s".formatted(todo.getId(), todo.getText(), todo.isCompleted());

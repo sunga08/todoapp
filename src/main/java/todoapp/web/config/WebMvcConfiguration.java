@@ -6,6 +6,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
+import todoapp.web.TodoController;
 import todoapp.web.support.servlet.view.CommaSeparatedValuesView;
 
 import java.util.ArrayList;
@@ -35,7 +36,9 @@ class WebMvcConfiguration implements WebMvcConfigurer {
 
     @Override
     public void configureViewResolvers(ViewResolverRegistry registry) {
-        // registry.enableContentNegotiation();
+        registry.viewResolver(new TodoController.TodoCsvViewResolver()); //View Resolver 직접 등록 (컨트롤러가 반환한 뷰 이름을 기반으로 해당 뷰를 찾아 렌더링)
+
+        //registry.enableContentNegotiation();
         // 위와 같이 직접 설정하면, 스프링부트가 구성한 ContentNegotiatingViewResolver 전략이 무시된다.
     }
 
