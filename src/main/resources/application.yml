@@ -15,6 +15,7 @@ logging:
     web: trace # 패키지 기반으로 설정
     sql: debug
 
+# 서버 인코딩 설정
 server:
   servlet:
     encoding:

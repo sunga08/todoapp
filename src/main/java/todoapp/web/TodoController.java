@@ -51,8 +51,8 @@ public class TodoController {
 
     @RequestMapping(path = "/todos", produces = "text/csv") //produces는 클라이언트 요청의 Accept 헤더에 따라 적합한 핸들러 메서드를 결정
     public void downloadTodos(Model model) {
-//        model.addAttribute(SpreadsheetConverter.convert(findTodos.all()));
-        model.addAttribute("todos", findTodos.all());
+        model.addAttribute(SpreadsheetConverter.convert(findTodos.all()));
+//        model.addAttribute("todos", findTodos.all());
     }
 
     //커스텀 뷰 리졸버

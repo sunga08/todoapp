@@ -33,6 +33,9 @@ public class CommaSeparatedValuesView extends AbstractView {
         return true;
     }
 
+    /**
+     * csv 응답 생성, 클라이언트로 전송
+     */
     @Override
     protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
         var spreadsheet = Spreadsheet.obtainSpreadsheet(model);
