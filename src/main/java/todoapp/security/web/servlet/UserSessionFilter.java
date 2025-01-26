@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import todoapp.core.foundation.NotImplementedException;
 import todoapp.security.UserSession;
@@ -21,6 +22,7 @@ import java.util.Objects;
  *
  * @author springrunner.kr@gmail.com
  */
+@Component //필터를 컨테이너에 등록
 public class UserSessionFilter extends OncePerRequestFilter {
 
     private final UserSessionHolder userSessionHolder;
@@ -34,7 +36,13 @@ public class UserSessionFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("processing user-session filter");
 
-        throw new NotImplementedException();
+        var userSession = userSessionHolder.get();
+        var requestWrapper = new UserSessionRequestWrapper(request, userSession);
+
+        //전처리
+        filterChain.doFilter(requestWrapper, response);
+
+        //후처리
     }
 
     /**
@@ -51,12 +59,15 @@ public class UserSessionFilter extends OncePerRequestFilter {
 
         @Override
         public Principal getUserPrincipal() {
-            throw new NotImplementedException();
+            return userSession;
         }
 
         @Override
         public boolean isUserInRole(String role) {
-            throw new NotImplementedException();
+            if (Objects.nonNull(userSession)) {
+                return userSession.hasRole(role);
+            }
+            return false;
         }
 
     }

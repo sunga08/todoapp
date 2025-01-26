@@ -2,6 +2,7 @@ package todoapp.security;
 
 import todoapp.core.user.domain.User;
 
+import java.security.Principal;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
@@ -12,7 +13,7 @@ import java.util.Set;
  *
  * @author springrunner.kr@gmail.com
  */
-public class UserSession {
+public class UserSession implements Principal { //Principal: 인증된 사용자정보 임을 알려주기 위한 인터페이스
 
     public static final String ROLE_USER = "ROLE_USER";
 

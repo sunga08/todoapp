@@ -27,12 +27,7 @@ import java.util.stream.Stream;
  */
 public class RolesVerifyHandlerInterceptor implements HandlerInterceptor, RolesAllowedSupport {
 
-    private final UserSessionHolder userSessionHolder;
     private final Logger log = LoggerFactory.getLogger(getClass());
-
-    public RolesVerifyHandlerInterceptor(UserSessionHolder userSessionHolder) {
-        this.userSessionHolder = Objects.requireNonNull(userSessionHolder);
-    }
 
     @Override
     public final boolean preHandle(
@@ -52,15 +47,15 @@ public class RolesVerifyHandlerInterceptor implements HandlerInterceptor, RolesA
             if (Objects.nonNull(roleAllowed)) {
                 log.debug("verify roles-allowed: {}", roleAllowed);
 
+                //사용자 세션을 사용하지 않고 request를 사용하는 방식으로 변경
                 //1. 로그인 되어 있나? (인증)
-                var userSession = userSessionHolder.get();
-                if (Objects.isNull(userSession)) { //로그인 안되어 있으면 세션이 비어있을 것
+                if (Objects.isNull(request.getUserPrincipal())) { //로그인 안되어 있으면 세션이 비어있을 것
                     throw new UnauthorizedAccessException(); //false를 반환해도 되지만 이유를 명시하기 위해 예외 발생시킴
                 }
 
                 //2. 역할은 적절한가? (인가)
                 var matchedRoles = Stream.of(roleAllowed.value())
-                        .filter(userSession::hasRole) //hasRole을 사용자 세션이 가지고 있는지?
+                        .filter(request::isUserInRole) //hasRole을 사용자 세션이 가지고 있는지?
                         .collect(Collectors.toSet());
 
                 log.debug("matched roles: {}", matchedRoles);
