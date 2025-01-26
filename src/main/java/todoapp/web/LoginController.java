@@ -1,6 +1,8 @@
 package todoapp.web;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -36,9 +38,8 @@ public class LoginController {
         return "login";
     }
 
-    //사용자 이름 4자 이상
     @PostMapping("/login")
-    public String loginProcess(LoginCommand command) {
+    public String loginProcess(@Valid LoginCommand command) {
         log.debug("request command: {}", command);
         try {
             // 1. 사용자 저장소에 사용자가 있을 경우: 비밀번호 확인 후 로그인 처리
@@ -51,5 +52,5 @@ public class LoginController {
         return "redirect:/todos"; //RedirectView로 처리
     }
 
-    record LoginCommand(String username, String password) {}
+    record LoginCommand(@Size(min = 4, max = 20) String username, String password) {}
 }
