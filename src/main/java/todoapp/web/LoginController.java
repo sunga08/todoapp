@@ -1,6 +1,5 @@
 package todoapp.web;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 import org.slf4j.Logger;
@@ -8,21 +7,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import todoapp.core.user.application.RegisterUser;
 import todoapp.core.user.application.VerifyUserPassword;
 import todoapp.core.user.domain.User;
 import todoapp.core.user.domain.UserNotFoundException;
 import todoapp.core.user.domain.UserPasswordNotMatchedException;
-import todoapp.web.model.SiteProperties;
 
 import java.util.Objects;
 
 @Controller
+@SessionAttributes("user")
 public class LoginController {
 
     private final VerifyUserPassword verifyUserPassword; //비밀번호 검증
@@ -52,13 +47,15 @@ public class LoginController {
             return "login";
         }
 
+        User user;
         try {
             // 1. 사용자 저장소에 사용자가 있을 경우: 비밀번호 확인 후 로그인 처리
-            verifyUserPassword.verify(command.username, command.password);
+            user = verifyUserPassword.verify(command.username, command.password);
         } catch (UserNotFoundException e) {
             // 2. 사용자 저장소에 없는 경우: 회원가입 처리 후 로그인 처리
-            registerUser.register(command.username, command.password);
+            user = registerUser.register(command.username, command.password);
         }
+        model.addAttribute("user", user); //model을 세션에서 유지하겠다..
 
         return "redirect:/todos"; //RedirectView로 처리
     }
