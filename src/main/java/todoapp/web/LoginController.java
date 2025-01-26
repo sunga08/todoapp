@@ -13,6 +13,8 @@ import todoapp.core.user.application.VerifyUserPassword;
 import todoapp.core.user.domain.User;
 import todoapp.core.user.domain.UserNotFoundException;
 import todoapp.core.user.domain.UserPasswordNotMatchedException;
+import todoapp.security.UserSession;
+import todoapp.security.UserSessionHolder;
 
 import java.util.Objects;
 
@@ -23,13 +25,15 @@ public class LoginController {
     private final VerifyUserPassword verifyUserPassword; //비밀번호 검증
     private final RegisterUser registerUser; //새로운 사용자 등록
 
+    private final UserSessionHolder userSessionHolder;
+
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public LoginController(VerifyUserPassword verifyUserPassword, RegisterUser registerUser) {
+    public LoginController(VerifyUserPassword verifyUserPassword, RegisterUser registerUser, UserSessionHolder userSessionHolder) {
         this.verifyUserPassword = Objects.requireNonNull(verifyUserPassword);
         this.registerUser = Objects.requireNonNull(registerUser);
+        this.userSessionHolder = Objects.requireNonNull(userSessionHolder);
     }
-
 
     @GetMapping("/login")
     public String loginForm(Model model) {
@@ -55,7 +59,8 @@ public class LoginController {
             // 2. 사용자 저장소에 없는 경우: 회원가입 처리 후 로그인 처리
             user = registerUser.register(command.username, command.password);
         }
-        model.addAttribute("user", user); //model을 세션에서 유지하겠다..
+//        model.addAttribute("user", user); //model을 세션에서 유지하겠다..
+        userSessionHolder.set(new UserSession(user));
 
         return "redirect:/todos"; //RedirectView로 처리
     }
