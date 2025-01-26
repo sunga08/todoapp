@@ -1,6 +1,9 @@
 package todoapp.web.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.error.ErrorAttributes;
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
@@ -8,6 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import todoapp.web.TodoController;
+import todoapp.web.support.servlet.error.ReadableErrorAttributes;
 import todoapp.web.support.servlet.view.CommaSeparatedValuesView;
 
 import java.util.ArrayList;
@@ -59,6 +63,15 @@ class WebMvcConfiguration implements WebMvcConfigurer {
             viewResolver.setDefaultViews(defaultViews);
         }
 
+    }
+
+    /**
+     * 기본 전략 대신 ReadableErrorAttributes 을 사용하도록 빈 등록
+     * @return
+     */
+    @Bean
+    ErrorAttributes errorAttributes(MessageSource messageSource) { //호출하려고 봤더니 인자를 받고 있음 -> 컨테이너에 있는지 확인하고 있으면 주입 (MessageSource는 스프링부트에서 관리하는 컴포넌트) MessageSourceAuto
+        return new ReadableErrorAttributes(messageSource);
     }
 
 }

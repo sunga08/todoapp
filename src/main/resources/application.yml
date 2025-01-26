@@ -5,6 +5,9 @@ todoapp:
   data:
     initialize: true
 
+Exception:
+  TodoNotFoundException: 요청한 할 일을 찾을 수 없어요.
+
 spring:
   application:
     name: todo
@@ -17,6 +20,10 @@ logging:
 
 # 서버 인코딩 설정
 server:
+  # 오류 설정 전략 변경
+  error:
+    include-message: always #오류 발생시 메세지 포함
+    include-binding-errors: always
   servlet:
     encoding:
       charset: utf-8
