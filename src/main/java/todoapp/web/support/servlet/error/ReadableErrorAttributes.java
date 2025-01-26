@@ -8,6 +8,7 @@ import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceResolvable;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 import org.springframework.validation.BindingResult;
@@ -48,12 +49,17 @@ public class ReadableErrorAttributes implements ErrorAttributes, HandlerExceptio
         // TODO attributes, error 을 사용해 message 속성을 읽기 좋은 문구로 가공한다.
         // TODO ex) attributes.put("message", "문구");
         if (Objects.nonNull(error)) {
-            var errorCode = "Exception.%s".formatted(
-                    error.getClass().getSimpleName()
-            );
-            var errorMessage = messageSource.getMessage(
-              errorCode, new Object[0], error.getMessage(), webRequest.getLocale()
-            );
+            String errorMessage;
+            if (error instanceof MessageSourceResolvable it) {
+                errorMessage = messageSource.getMessage(it, webRequest.getLocale());
+            } else {
+                var errorCode = "Exception.%s".formatted(
+                        error.getClass().getSimpleName()
+                );
+                errorMessage = messageSource.getMessage(
+                  errorCode, new Object[0], error.getMessage(), webRequest.getLocale()
+                );
+            }
 
             attributes.put("message", errorMessage);
         }

@@ -7,7 +7,7 @@ import todoapp.core.shared.identifier.TodoId;
  *
  * @author springrunner.kr@gmail.com
  */
-public class TodoNotFoundException extends TodoException {
+public class TodoNotFoundException extends TodoException{
 
     private final TodoId id;
 
@@ -18,6 +18,11 @@ public class TodoNotFoundException extends TodoException {
 
     public TodoId getId() {
         return id;
+    }
+
+    @Override
+    public Object[] getArguments() {
+        return new Object[]{id};
     }
 
 }
