@@ -5,7 +5,7 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-import todoapp.core.foundation.NotImplementedException;
+import todoapp.security.UserSession;
 import todoapp.security.UserSessionHolder;
 
 import java.util.Objects;
@@ -25,12 +25,12 @@ public class UserSessionHandlerMethodArgumentResolver implements HandlerMethodAr
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        throw new NotImplementedException();
+        return UserSession.class.isAssignableFrom(parameter.getParameterType()); //parameter는 컨트롤러의 UserSession을 의미함
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        throw new NotImplementedException();
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+        return userSessionHolder.get();
     }
 
 }

@@ -5,16 +5,20 @@ import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
+import todoapp.security.UserSessionHolder;
 import todoapp.web.TodoController;
+import todoapp.web.support.method.UserSessionHandlerMethodArgumentResolver;
 import todoapp.web.support.servlet.error.ReadableErrorAttributes;
 import todoapp.web.support.servlet.view.CommaSeparatedValuesView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Spring Web MVC 설정 정보이다.
@@ -23,6 +27,14 @@ import java.util.ArrayList;
  */
 @Configuration
 class WebMvcConfiguration implements WebMvcConfigurer {
+
+    @Autowired
+    private UserSessionHolder userSessionHolder;
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new UserSessionHandlerMethodArgumentResolver(userSessionHolder));
+    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
