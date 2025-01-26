@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,8 +42,16 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String loginProcess(@Valid LoginCommand command) {
+    public String loginProcess(@Valid LoginCommand command, BindingResult bindingResult, Model model) {
         log.debug("request command: {}", command);
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("bindingResult", bindingResult);
+            model.addAttribute("message", "입력 값이 없거나 올바르지 않습니다.");
+
+            return "login";
+        }
+
         try {
             // 1. 사용자 저장소에 사용자가 있을 경우: 비밀번호 확인 후 로그인 처리
             verifyUserPassword.verify(command.username, command.password);
@@ -52,14 +61,6 @@ public class LoginController {
         }
 
         return "redirect:/todos"; //RedirectView로 처리
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public String handleMethodArgumentNotValidException(MethodArgumentNotValidException error, Model model) {
-        model.addAttribute("bindingResult", error.getBindingResult());
-        model.addAttribute("message", "입력 값이 없거나 올바르지 않습니다.");
-
-        return "login";
     }
 
     record LoginCommand(@Size(min = 4, max = 20) String username, String password) {}
