@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -50,6 +52,14 @@ public class LoginController {
         }
 
         return "redirect:/todos"; //RedirectView로 처리
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public String handleMethodArgumentNotValidException(MethodArgumentNotValidException error, Model model) {
+        model.addAttribute("bindingResult", error.getBindingResult());
+        model.addAttribute("message", "입력 값이 없거나 올바르지 않습니다.");
+
+        return "login";
     }
 
     record LoginCommand(@Size(min = 4, max = 20) String username, String password) {}
