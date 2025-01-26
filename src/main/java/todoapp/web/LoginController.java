@@ -63,5 +63,12 @@ public class LoginController {
         return "redirect:/todos"; //RedirectView로 처리
     }
 
+    //해당 컨트롤러 안에서만 동작함, 모든 컨트롤러에서 동작하길 원하면 컨트롤러 어드바이스에.. (전역으로 처리되어야 하지 않으면 컨트롤러내에 선언하는것이 처리 흐름이 더 자연스러울 수 있다.)
+    @ExceptionHandler(UserPasswordNotMatchedException.class)
+    public String handleUserPasswordNotMatchedException(UserPasswordNotMatchedException error, Model model) {
+        model.addAttribute("message", "비밀번호가 일치하지 않습니다.");
+        return "login";
+    }
+
     record LoginCommand(@Size(min = 4, max = 20) String username, String password) {}
 }
