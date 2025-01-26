@@ -20,6 +20,7 @@ import todoapp.core.todo.domain.TodoNotFoundException;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 스프링부트에 기본 구현체인 {@link DefaultErrorAttributes}에 message 속성을 덮어쓰기 할 목적으로 작성한 컴포넌트이다.
@@ -62,6 +63,16 @@ public class ReadableErrorAttributes implements ErrorAttributes, HandlerExceptio
             }
 
             attributes.put("message", errorMessage);
+        }
+
+        var bindingResult = extractBindingResult(error);
+        if (Objects.nonNull(bindingResult)) {
+            var errors = bindingResult
+                    .getAllErrors()
+                    .stream()
+                    .map(it -> messageSource.getMessage(it, webRequest.getLocale()))
+                    .toList();
+            attributes.put("errors", errors);
         }
 
         return attributes;
