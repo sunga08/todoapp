@@ -1,5 +1,6 @@
 package todoapp.web;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -13,9 +14,11 @@ import todoapp.core.todo.application.FindTodos;
 import todoapp.core.todo.application.ModifyTodo;
 import todoapp.core.todo.application.RemoveTodo;
 import todoapp.core.todo.domain.Todo;
+import todoapp.security.UserSession;
 
 import java.util.Objects;
 
+@RolesAllowed(UserSession.ROLE_USER) //자바표준 애노테이션
 @RestController
 @RequestMapping(value = "/api/todos")
 public class TodoRestController {
