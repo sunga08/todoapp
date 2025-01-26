@@ -4,6 +4,9 @@ todoapp:
     description: What're your plans today?
   data:
     initialize: true
+  feature-toggles:
+    auth: true
+    onlineUsersCounter: false
 
 Exception:
   TodoNotFoundException: 요청한 할 일을 찾을 수 없어요.
