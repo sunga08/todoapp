@@ -22,16 +22,16 @@ import java.util.*;
 public class TodoController {
 
     private final FindTodos findTodos;
-    private final SiteProperties siteProperties;
+//    private final SiteProperties siteProperties;
 
     public TodoController(SiteProperties siteProperties, FindTodos findTodos) {
-        this.siteProperties = Objects.requireNonNull(siteProperties);
+//        this.siteProperties = Objects.requireNonNull(siteProperties);
         this.findTodos = Objects.requireNonNull(findTodos);
     }
 
     @RequestMapping("/todos")
     public void todos(Model model) {
-        model.addAttribute("site", siteProperties);
+//        model.addAttribute("site", siteProperties);
 
 //        var siteProperties = new SiteProperties();
 //        siteProperties.setAuthor("SungA Cho");
