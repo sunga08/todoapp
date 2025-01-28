@@ -1,6 +1,8 @@
 package todoapp.web.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.error.ErrorAttributes;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
@@ -8,6 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import todoapp.web.TodoController;
+import todoapp.web.support.servlet.error.ReadableErrorAttributes;
 import todoapp.web.support.servlet.view.CommaSeparatedValuesView;
 
 import java.util.ArrayList;
@@ -19,6 +22,11 @@ import java.util.ArrayList;
  */
 @Configuration
 class WebMvcConfiguration implements WebMvcConfigurer {
+
+    @Bean
+    ErrorAttributes errorAttributes() {
+        return new ReadableErrorAttributes();
+    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
