@@ -8,6 +8,7 @@ import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.core.Ordered;
+import org.springframework.core.env.Environment;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.request.WebRequest;
@@ -28,8 +29,14 @@ import java.util.Objects;
  */
 public class ReadableErrorAttributes implements ErrorAttributes, HandlerExceptionResolver, Ordered {
 
+    private final Environment environment;
+
     private final DefaultErrorAttributes delegate = new DefaultErrorAttributes();
     private final Logger log = LoggerFactory.getLogger(getClass());
+
+    public ReadableErrorAttributes(Environment environment) {
+        this.environment = environment;
+    }
 
     @Override
     public Map<String, Object> getErrorAttributes(WebRequest webRequest, ErrorAttributeOptions options) {
@@ -41,8 +48,8 @@ public class ReadableErrorAttributes implements ErrorAttributes, HandlerExceptio
         if (Objects.nonNull(error)) {
             // attributes, error 을 사용해 message 속성을 읽기 좋은 문구로 가공한다.
             switch (error) {
-                case TodoNotFoundException it -> attributes.put("message", "요청한 할 일을 찾을 수 없습니다.");
-                case MethodArgumentNotValidException it -> attributes.put("message", "입력 값이 없거나 올바르지 않습니다.");
+                case TodoNotFoundException it -> attributes.put("message", environment.getProperty("Exception.TodoNotFoundException"));
+                case MethodArgumentNotValidException it -> attributes.put("message", environment.getProperty("Exception.MethodArgumentNotValidException"));
                 default -> attributes.put("message", error.getMessage());
             }
         }
