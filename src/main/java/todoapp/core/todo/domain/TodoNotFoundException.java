@@ -20,4 +20,8 @@ public class TodoNotFoundException extends TodoException {
         return id;
     }
 
+    @Override
+    public Object[] getArguments() {
+        return new Object[]{id};
+    }
 }
