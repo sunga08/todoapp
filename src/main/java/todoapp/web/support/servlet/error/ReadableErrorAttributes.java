@@ -47,11 +47,12 @@ public class ReadableErrorAttributes implements ErrorAttributes, HandlerExceptio
 
         if (Objects.nonNull(error)) {
             // attributes, error 을 사용해 message 속성을 읽기 좋은 문구로 가공한다.
-            switch (error) {
-                case TodoNotFoundException it -> attributes.put("message", environment.getProperty("Exception.TodoNotFoundException"));
-                case MethodArgumentNotValidException it -> attributes.put("message", environment.getProperty("Exception.MethodArgumentNotValidException"));
-                default -> attributes.put("message", error.getMessage());
-            }
+            var errorCode = "Exception.%s".formatted(
+                    error.getClass().getSimpleName()
+            );
+            var errorMessage = environment.getProperty(errorCode, error.getMessage());
+
+            attributes.put("message", errorMessage);
         }
 
         return attributes;
