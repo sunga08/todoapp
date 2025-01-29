@@ -8,14 +8,12 @@ import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceResolvable;
 import org.springframework.core.Ordered;
-import org.springframework.core.env.Environment;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
-import todoapp.core.todo.domain.TodoNotFoundException;
 
 import java.util.Map;
 import java.util.Objects;
@@ -47,9 +45,13 @@ public class ReadableErrorAttributes implements ErrorAttributes, HandlerExceptio
         log.debug("obtain error-attributes: {}", attributes, error);
 
         if (Objects.nonNull(error)) {
-            // attributes, error 을 사용해 message 속성을 읽기 좋은 문구로 가공한다.
-            var errorCode = "Exception.%s".formatted(error.getClass().getSimpleName());
-            var errorMessage = messageSource.getMessage(errorCode, new Object[0], error.getMessage(), webRequest.getLocale()); //메시지 리소스 파일의 key, 메시지에 삽입될 동적값, 기본 메시지, 메시지의 언어 및 지역
+            var errorMessage = error.getMessage();
+            if (error instanceof MessageSourceResolvable it) { //에러가 MessageSourceResovable을 구현하고 있을 경우 (객체 내부에 메시지 정보가 담겨있음)
+                errorMessage = messageSource.getMessage(it, webRequest.getLocale()); // 메시지 정보를 바로 가져올 수 있음
+            } else {
+                var errorCode = "Exception.%s".formatted(error.getClass().getSimpleName());
+                errorMessage = messageSource.getMessage(errorCode, new Object[0], errorMessage, webRequest.getLocale()); //예외 기반으로 메시지 정보를 가져와야 함
+            }
 
             attributes.put("message", errorMessage);
         }
