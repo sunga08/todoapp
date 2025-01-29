@@ -2,6 +2,7 @@ package todoapp.web.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -23,9 +24,12 @@ import java.util.ArrayList;
 @Configuration
 class WebMvcConfiguration implements WebMvcConfigurer {
 
+    /**
+     * MessageSource는 스프링부트에서 관리하는 컴포넌트
+     */
     @Bean
-    ErrorAttributes errorAttributes(Environment environment) {
-        return new ReadableErrorAttributes(environment);
+    ErrorAttributes errorAttributes(MessageSource messageSource) {
+        return new ReadableErrorAttributes(messageSource);
     }
 
     @Override
