@@ -32,11 +32,16 @@ public class LoginController {
     public LoginController(VerifyUserPassword verifyUserPassword, RegisterUser registerUser, UserSessionHolder userSessionHolder) {
         this.verifyUserPassword = Objects.requireNonNull(verifyUserPassword);
         this.registerUser = Objects.requireNonNull(registerUser);
-        this.userSessionHolder = userSessionHolder;
+        this.userSessionHolder = Objects.requireNonNull(userSessionHolder);
     }
 
     @GetMapping("/login")
-    public void loginPage() {
+    public String loginPage() {
+        if (Objects.nonNull(userSessionHolder.get())) {
+            return "redirect:/todos";
+        }
+
+        return "login";
     }
 
     @PostMapping("/login")
