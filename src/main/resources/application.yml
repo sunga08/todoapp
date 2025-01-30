@@ -4,6 +4,9 @@ todoapp:
     description: What're your plans today?
   data:
     initialize: true
+  feature-toggles:
+    auth: true
+    onlineUserCounter: false
 
 spring:
   application:
@@ -15,9 +18,9 @@ logging:
     web: trace # 패키지 기반으로 설정
     sql: debug
 
-Exception:
-  TodoNotFoundException: 요청한 할 일을 찾을 수 없어요.
-  MethodArgumentNotValidException: 입력 값이 없거나 올바르지 않아요.
+#Exception:
+#  TodoNotFoundException: 요청한 할 일을 찾을 수 없어요.
+#  MethodArgumentNotValidException: 입력 값이 없거나 올바르지 않아요.
 
 
 # 서버 인코딩 설정
