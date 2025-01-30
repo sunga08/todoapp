@@ -10,26 +10,29 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import todoapp.core.user.application.RegisterUser;
 import todoapp.core.user.application.VerifyUserPassword;
 import todoapp.core.user.domain.User;
 import todoapp.core.user.domain.UserNotFoundException;
 import todoapp.core.user.domain.UserPasswordNotMatchedException;
+import todoapp.security.UserSession;
+import todoapp.security.UserSessionHolder;
 
 import java.util.Objects;
 
 @Controller
-@SessionAttributes("user")
 public class LoginController {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final VerifyUserPassword verifyUserPassword;
     private final RegisterUser registerUser;
 
-    public LoginController(VerifyUserPassword verifyUserPassword, RegisterUser registerUser) {
+    private final UserSessionHolder userSessionHolder;
+
+    public LoginController(VerifyUserPassword verifyUserPassword, RegisterUser registerUser, UserSessionHolder userSessionHolder) {
         this.verifyUserPassword = Objects.requireNonNull(verifyUserPassword);
         this.registerUser = Objects.requireNonNull(registerUser);
+        this.userSessionHolder = userSessionHolder;
     }
 
     @GetMapping("/login")
@@ -55,7 +58,7 @@ public class LoginController {
             //사용자가 없으면 신규 사용자로 등록 후 /todos로 리다이렉트
             user = registerUser.register(loginCommand.username, loginCommand.password);
         }
-        model.addAttribute("user", user);
+        userSessionHolder.set(new UserSession(user));
 
         return "redirect:/todos";
     }
