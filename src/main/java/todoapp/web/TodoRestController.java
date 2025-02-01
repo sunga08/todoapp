@@ -1,5 +1,6 @@
 package todoapp.web;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -13,6 +14,7 @@ import todoapp.core.todo.application.FindTodos;
 import todoapp.core.todo.application.ModifyTodo;
 import todoapp.core.todo.application.RemoveTodo;
 import todoapp.core.todo.domain.Todo;
+import todoapp.security.UserSession;
 
 import java.util.Objects;
 
@@ -36,6 +38,7 @@ public class TodoRestController {
         this.removeTodo = Objects.requireNonNull(removeTodo);
     }
 
+    @RolesAllowed(UserSession.ROLE_USER)
     @GetMapping
     public Iterable<Todo> readAll() {
         return find.all();
