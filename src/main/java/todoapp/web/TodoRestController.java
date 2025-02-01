@@ -18,6 +18,7 @@ import todoapp.security.UserSession;
 
 import java.util.Objects;
 
+@RolesAllowed(UserSession.ROLE_USER)
 @RestController
 @RequestMapping(value = "/api/todos")
 public class TodoRestController {
@@ -38,7 +39,6 @@ public class TodoRestController {
         this.removeTodo = Objects.requireNonNull(removeTodo);
     }
 
-    @RolesAllowed(UserSession.ROLE_USER)
     @GetMapping
     public Iterable<Todo> readAll() {
         return find.all();

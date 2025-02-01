@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import todoapp.security.AccessDeniedException;
@@ -33,7 +34,11 @@ public class RolesVerifyHandlerInterceptor implements HandlerInterceptor, RolesA
     @Override
     public final boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (handler instanceof HandlerMethod handlerMethod) {
-            var roleAllowed = handlerMethod.getMethodAnnotation(RolesAllowed.class);
+            var roleAllowed = handlerMethod.getMethodAnnotation(RolesAllowed.class); //핸들러 메소드에 애노테이션이 있는지
+
+            if (Objects.isNull(roleAllowed)) { //핸들러가 속해 있는 컨트롤러에 애노테이션이 있는지
+                roleAllowed = AnnotatedElementUtils.findMergedAnnotation(handlerMethod.getBeanType(), RolesAllowed.class);
+            }
 
             if (Objects.nonNull(roleAllowed)) { //존재한다면 보호되고 있는 핸들러
                 log.debug("verify roles-allowed: {}", roleAllowed);
