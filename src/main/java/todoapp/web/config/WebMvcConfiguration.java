@@ -6,15 +6,19 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
+import todoapp.security.UserSessionHolder;
+import todoapp.web.support.method.UserSessionHandlerMethodArgumentResolver;
 import todoapp.web.support.servlet.error.ReadableErrorAttributes;
 import todoapp.web.support.servlet.view.CommaSeparatedValuesView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Spring Web MVC 설정 정보이다.
@@ -23,6 +27,14 @@ import java.util.ArrayList;
  */
 @Configuration
 class WebMvcConfiguration implements WebMvcConfigurer {
+
+    @Autowired
+    private UserSessionHolder userSessionHolder;
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new UserSessionHandlerMethodArgumentResolver(userSessionHolder));
+    }
 
     /**
      * MessageSource는 스프링부트에서 관리하는 컴포넌트
