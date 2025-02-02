@@ -25,11 +25,11 @@ public class UserProfile {
     }
 
     public String getProfilePictureUrl() {
-        if (user.hasProfilePicture()) {
+        if (user.hasProfilePicture()) { //프로필 이미지를 변경한 적이 있다면 저장소에 프로필 이미지 URI가 있을 것
             return USER_PROFILE_PICTURE_URL;
         }
 
-        // 프로필 이미지가 없으면 기본 프로필 이미지를 사용한다.
+        // 프로필 이미지가 없으면 기본 프로필 이미지를 사용한다. (static resource에 있는 이미지)
         return DEFAULT_PROFILE_PICTURE_URL;
     }
 
