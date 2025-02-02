@@ -42,7 +42,7 @@ class WebMvcConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new RolesVerifyHandlerInterceptor(userSessionHolder));
+        registry.addInterceptor(new RolesVerifyHandlerInterceptor());
     }
 
     /**

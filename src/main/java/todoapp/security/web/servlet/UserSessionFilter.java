@@ -51,12 +51,15 @@ public class UserSessionFilter extends OncePerRequestFilter {
 
         @Override
         public Principal getUserPrincipal() {
-            throw new NotImplementedException();
+            return userSession;
         }
 
         @Override
         public boolean isUserInRole(String role) {
-            throw new NotImplementedException();
+            if (Objects.isNull(userSession)) {
+                return false;
+            }
+            return userSession.hasRole(role);
         }
 
     }
